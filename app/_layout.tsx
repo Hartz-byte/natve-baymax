@@ -1,9 +1,8 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-SplashScreen.preventAutoHideAsync();
+import SplashScreen from "@/components/SplashScreen";
 
 export default function RootLayout() {
   // font load
@@ -15,19 +14,27 @@ export default function RootLayout() {
     "Okra-Regular": require("../assets/fonts/Okra-Regular.ttf"),
   });
 
+  const [showSplash, setShowSplash] = useState(true);
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
+  if (showSplash) {
+    return <SplashScreen />;
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+
+      <Stack.Screen name="BaymaxScreen" />
     </Stack>
   );
 }
