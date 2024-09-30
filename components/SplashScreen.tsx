@@ -1,14 +1,135 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Image, StyleSheet, View } from "react-native";
+import React, { FC, useEffect } from "react";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
+import LottieView from "lottie-react-native";
 
-const SplashScreen = () => {
+import { Colors, Fonts, lightColors } from "@/utils/Constants";
+import { screenHeight, screenWidth } from "@/utils/Scaling";
+import CustomText from "./global/CustomText";
+import { initializeTtsListeners } from "@/utils/ttsListeners";
+
+const bottomColors = [...lightColors].reverse();
+
+const SplashScreen: FC = () => {
+  const baymaxAnimation = useSharedValue(screenHeight * 0.8);
+  const messageContainerAnimation = useSharedValue(screenWidth * 0.8);
+
+  const launchAnimation = async () => {
+    messageContainerAnimation.value = screenHeight * 0.001;
+
+    setTimeout(() => {
+      baymaxAnimation.value = screenHeight * 0.02;
+    }, 600);
+  };
+
+  useEffect(() => {
+    initializeTtsListeners();
+    launchAnimation();
+  });
+
+  // baymax animation
+  const animateImageStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: withTiming(baymaxAnimation.value, {
+            duration: 1500,
+          }),
+        },
+      ],
+    };
+  });
+
+  // message animation
+  const messageContainerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: withTiming(messageContainerAnimation.value, {
+            duration: 1200,
+          }),
+        },
+      ],
+    };
+  });
+
   return (
-    <View>
-      <Text>SplashScreen</Text>
+    <View style={styles.container}>
+      <Animated.View style={[styles.imageContainer, animateImageStyle]}>
+        <Image
+          source={require("../assets/images/launch.png")}
+          style={styles.img}
+        />
+      </Animated.View>
+
+      <Animated.View style={[styles.gradientContainer, messageContainerStyle]}>
+        <LinearGradient colors={bottomColors} style={styles.gradient}>
+          <View style={styles.textContainer}>
+            <CustomText fontSize={34} fontfamily={Fonts.Theme}>
+              BAYMAX!
+            </CustomText>
+
+            {/* animation file */}
+            <LottieView
+              source={require("../assets/animations/sync.json")}
+              style={{ width: 280, height: 100 }}
+              autoPlay={true}
+              loop
+            />
+
+            <CustomText>
+              Synchronizing best configurations for you...
+            </CustomText>
+          </View>
+        </LinearGradient>
+      </Animated.View>
     </View>
   );
 };
 
-export default SplashScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageContainer: {
+    width: screenWidth - 20,
+    height: screenHeight * 0.5,
+  },
+  img: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  gradientContainer: {
+    position: "absolute",
+    height: "35%",
+    bottom: 0,
+    width: "100%",
+  },
+  gradient: {
+    width: "100%",
+    height: "100%",
+    paddingTop: 30,
+  },
+  textContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    borderRadius: 20,
+    padding: 20,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 2,
+    alignItems: "center",
+    shadowColor: Colors.border,
+  },
+});
 
-const styles = StyleSheet.create({});
+export default SplashScreen;

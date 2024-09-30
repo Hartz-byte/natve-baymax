@@ -17,13 +17,13 @@ export default function RootLayout() {
   const [showSplash, setShowSplash] = useState(true);
 
   // splash screen display timer
-  useEffect(() => {
-    if (loaded) {
-      const timer = setTimeout(() => {
-        setShowSplash(false);
-      }, 2000);
-    }
-  }, [loaded]);
+  // useEffect(() => {
+  //   if (loaded) {
+  //     const timer = setTimeout(() => {
+  //       setShowSplash(false);
+  //     }, 2000);
+  //   }
+  // }, [loaded]);
 
   // splash screen display
   if (showSplash) {
