@@ -11,7 +11,8 @@ import LottieView from "lottie-react-native";
 import { Colors, Fonts, lightColors } from "@/utils/Constants";
 import { screenHeight, screenWidth } from "@/utils/Scaling";
 import CustomText from "./global/CustomText";
-import { initializeTtsListeners } from "@/utils/ttsListeners";
+import * as Tts from "expo-speech";
+// import { initializeSpeech } from "@/utils/ttsListeners";
 
 const bottomColors = [...lightColors].reverse();
 
@@ -23,14 +24,16 @@ const SplashScreen: FC = () => {
     messageContainerAnimation.value = screenHeight * 0.001;
 
     setTimeout(() => {
-      baymaxAnimation.value = screenHeight * 0.02;
+      baymaxAnimation.value = -screenHeight * 0.02;
+
+      Tts.speak("Hello! My name is Rose.");
     }, 600);
   };
 
   useEffect(() => {
-    initializeTtsListeners();
+    // initializeSpeech();
     launchAnimation();
-  });
+  }, []);
 
   // baymax animation
   const animateImageStyle = useAnimatedStyle(() => {
@@ -70,9 +73,7 @@ const SplashScreen: FC = () => {
       <Animated.View style={[styles.gradientContainer, messageContainerStyle]}>
         <LinearGradient colors={bottomColors} style={styles.gradient}>
           <View style={styles.textContainer}>
-            <CustomText fontSize={34} fontfamily={Fonts.Theme}>
-              BAYMAX!
-            </CustomText>
+            <CustomText fontSize={34}>BAYMAX!</CustomText>
 
             {/* animation file */}
             <LottieView

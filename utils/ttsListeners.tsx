@@ -1,18 +1,14 @@
-import Tts from "react-native-tts";
+import * as Speech from "expo-speech";
 
-export const initializeTtsListeners = async () => {
-  Tts.getInitStatus().then(
-    (e) => {
-      console.log(e);
-
-      console.log("All ok TTS ✅");
-    },
-    (err) => {
-      if (err.code === "no_engine") {
-        console.log("no engine TTS");
-
-        Tts.requestInstallEngine();
-      }
+export const initializeSpeech = async () => {
+  try {
+    const voices = await Speech.getAvailableVoicesAsync();
+    if (voices.length > 0) {
+      console.log(voices);
+    } else {
+      console.log("No voices available. Speech might not be supported.");
     }
-  );
+  } catch (error) {
+    console.error("Error initializing Speech:", error);
+  }
 };

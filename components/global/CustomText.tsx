@@ -16,7 +16,8 @@ interface Props {
 
 const CustomText: React.FC<Props> = ({
   varient = "body",
-  fontfamily = Fonts.Regular,
+  // fontfamily = Fonts.Regular,
+  fontfamily,
   fontSize,
   style,
   children,
